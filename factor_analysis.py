@@ -4,53 +4,111 @@ from factor_analyzer.factor_analyzer import calculate_bartlett_sphericity
 import numpy
 
 dataset = pandas.read_csv("dataset_final.csv")
-q_data = dataset[dataset.columns[~dataset.columns.isin(['math'])]]
+dataset = dataset[dataset.columns[~dataset.columns.isin(['math'])]]
+## remove observations where there is a math score but no personality data
+df_clean = dataset.loc[~(dataset==0).all(axis=1)]
+print(len(df_clean)) ## length = 19520
+## I am also going to try removing obs with ANY zero answers to see if it changes the number of factors
+df_no_zeros = dataset.loc[~(dataset==0).any(axis=1)]
+print(len(df_no_zeros)) #length = 15195
+
+### Run factor analysis on ALL obs (DID NOT SEEM CORRECT)
 
 ## tests difference from identity matrix
-chi2 ,p=calculate_bartlett_sphericity(dataset)
-print(chi2, p)
+# chi2 ,p=calculate_bartlett_sphericity(dataset)
+# print(chi2, p)
 ## p = 0.0
 
-## test for n=4 to start
 # machine = FactorAnalyzer(n_factors=40, rotation=None)
-# machine.fit(dataset)
+# machine.fit(q_data)
 # ev, v = machine.get_eigenvalues()
 # print(ev)
-## the first 5 factors have variances > 1; these are likely the 5 groups we want to analyze
-
-# machine = FactorAnalyzer(n_factors=6, rotation=None)
-# machine.fit(dataset)
-# output = machine.loadings_
-# print(output)
-
-# machine = FactorAnalyzer(n_factors=5, rotation=None)
-# machine.fit(dataset)
-# output = machine.loadings_
-# print(output)
+## the first 4 factors have eigenvalues > 1; these are likely the 4 groups we want to analyze
 
 # machine = FactorAnalyzer(n_factors=4, rotation=None)
-# machine.fit(dataset)
+# machine.fit(q_data)
 # output = machine.loadings_
 # print(output)
 
-machine = FactorAnalyzer(n_factors=6, rotation='varimax')
-machine.fit(dataset)
-factor_loadings = machine.loadings_
-print(factor_loadings)
+## Since personality traits may be correlated we will try with varimax 
+# machine = FactorAnalyzer(n_factors=4, rotation='varimax')
+# machine.fit(q_data)
+# factor_loadings4 = machine.loadings_
+#print(factor_loadings4)
 
-machine = FactorAnalyzer(n_factors=5, rotation='varimax')
-machine.fit(dataset)
-factor_loadings = machine.loadings_
-print(factor_loadings)
+# q_data = q_data.values
+# results = numpy.dot(q_data, factor_loadings4)
 
-machine = FactorAnalyzer(n_factors=4, rotation='varimax')
-machine.fit(dataset)
-factor_loadings = machine.loadings_
-print(factor_loadings)
+#### Run it with df_clean
 
+# tests difference from identity matrix
+# chi2 ,p=calculate_bartlett_sphericity(df_clean)
+# print(chi2, p)
+# # p = 0.0
 
+# machine = FactorAnalyzer(n_factors=40, rotation=None)
+# machine.fit(df_clean)
+# ev, v = machine.get_eigenvalues()
+# print(ev)
+## the first 7 factors have eigenvalues > 1; these are likely the 7 groups we want to analyze
 
+# machine = FactorAnalyzer(n_factors=7, rotation=None)
+# machine.fit(df_clean)
+# output = machine.loadings_
+# print(output)
 
+# machine = FactorAnalyzer(n_factors=7, rotation='varimax')
+# machine.fit(df_clean)
+# factor_loadings = machine.loadings_
+# print(factor_loadings.round(decimals=3))
+
+# machine = FactorAnalyzer(n_factors=8, rotation='varimax')
+# machine.fit(df_clean)
+# factor_loadings = machine.loadings_
+# print(factor_loadings.round(decimals=3))
+
+# machine = FactorAnalyzer(n_factors=6, rotation='varimax')
+# machine.fit(df_clean)
+# factor_loadings = machine.loadings_
+# print(factor_loadings.round(decimals=3))
+
+#### Run it with df_no_zeros
+
+# tests difference from identity matrix
+# chi2 ,p=calculate_bartlett_sphericity(df_clean)
+# print(chi2, p)
+# # p = 0.0
+
+# machine = FactorAnalyzer(n_factors=40, rotation=None)
+# machine.fit(df_no_zeros)
+# ev, v = machine.get_eigenvalues()
+# print(ev)
+## the first 7 factors have eigenvalues > 1; these are likely the 7 groups we want to analyze
+
+# machine = FactorAnalyzer(n_factors=7, rotation=None)
+# machine.fit(df_no_zeros)
+# output = machine.loadings_
+# print(output)
+
+machine = FactorAnalyzer(n_factors=7, rotation='varimax')
+machine.fit(df_no_zeros)
+factor_loadings_no_zeros = machine.loadings_
+# print(factor_loadings.round(decimals=3))
+
+df_no_zeros = df_no_zeros.values
+results_no_zeros = numpy.dot(df_no_zeros, factor_loadings_no_zeros)
+
+#### Save results
+
+# results = pandas.DataFrame(results).round()
+# results.rename(columns={0: 'x1', 1: 'x2', 2: 'x3', 3: 'x4'}, inplace=True)
+# print(results)
+# results.to_csv("results4.csv", index=False)
+
+results_no_zeros = pandas.DataFrame(results_no_zeros).round()
+results_no_zeros.rename(columns={0: 'x1', 1: 'x2', 2: 'x3', 3: 'x4', 4:'x5', 5:'x6',6:'x7'}, inplace=True)
+print(results_no_zeros)
+results_no_zeros.to_csv("results_no_zeros.csv", index=False)
 
 
 
