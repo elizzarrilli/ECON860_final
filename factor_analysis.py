@@ -45,21 +45,21 @@ df_no_zeros = df_no_zeros[df_no_zeros.columns[~df_no_zeros.columns.isin(['math']
 
 #### Run it with df_no_zeros
 
-# tests difference from identity matrix
-# chi2 ,p=calculate_bartlett_sphericity(df_clean)
-# print(chi2, p)
-# # p = 0.0
+tests difference from identity matrix
+chi2 ,p=calculate_bartlett_sphericity(df_clean)
+print(chi2, p)
+# p = 0.0
 
-# machine = FactorAnalyzer(n_factors=40, rotation=None)
-# machine.fit(df_no_zeros)
-# ev, v = machine.get_eigenvalues()
-# print(ev)
-## the first 7 factors have eigenvalues > 1; these are likely the 7 groups we want to analyze
+machine = FactorAnalyzer(n_factors=40, rotation=None)
+machine.fit(df_no_zeros)
+ev, v = machine.get_eigenvalues()
+print(ev)
+# the first 7 factors have eigenvalues > 1; these are likely the 7 groups we want to analyze
 
-# machine = FactorAnalyzer(n_factors=7, rotation=None)
-# machine.fit(df_no_zeros)
-# output = machine.loadings_
-# print(output)
+machine = FactorAnalyzer(n_factors=7, rotation=None)
+machine.fit(df_no_zeros)
+output = machine.loadings_
+print(output)
 
 machine = FactorAnalyzer(n_factors=7, rotation='varimax')
 machine.fit(df_no_zeros)

@@ -30,22 +30,6 @@ dataset = dataset.values
 # pyplot.savefig("images/silhouette_score_kmm.png")
 # pyplot.close()
 
-## Since the silhouette score for 4 clusters was highest ~.5, we will go with 4
-machine = KMeans(n_clusters=4)
-machine.fit(dataset)
-results = machine.predict(dataset)
-print(silhouette_score(dataset, results, metric = "euclidean"))
-results = pandas.DataFrame(results)
-
-
-## add clusters to the dataset as cluster IDs and save clustered data
-dataset = pandas.DataFrame(dataset)
-dataset['cluster'] = results
-dataset['math'] = df['math']
-dataset.rename(columns={0: 'x1', 1: 'x2', 2: 'x3', 3: 'x4', 4:'x5', 5:'x6',6:'x7'}, inplace=True)
-print(dataset)
-dataset.to_csv("data/clustered_data.csv", index=False)
-
 # ### kMedoids clustering ###########################################
 
 # def run_kmedoids(n, dataset):
@@ -86,9 +70,22 @@ dataset.to_csv("data/clustered_data.csv", index=False)
 # pyplot.savefig("images/silhouette_score_gmm.png")
 # pyplot.close()
 
+### KMeans Clustering in 4 Groups ##############################################################
+## Since the silhouette score for 4 clusters was highest ~.5, we will go with 4
+machine = KMeans(n_clusters=4)
+machine.fit(dataset)
+results = machine.predict(dataset)
+print(silhouette_score(dataset, results, metric = "euclidean"))
+results = pandas.DataFrame(results)
 
 
-
+## add clusters to the dataset as cluster IDs and save clustered data
+dataset = pandas.DataFrame(dataset)
+dataset['cluster'] = results
+dataset['math'] = df['math']
+dataset.rename(columns={0: 'x1', 1: 'x2', 2: 'x3', 3: 'x4', 4:'x5', 5:'x6',6:'x7'}, inplace=True)
+print(dataset)
+dataset.to_csv("data/clustered_data.csv", index=False)
 
 
 
